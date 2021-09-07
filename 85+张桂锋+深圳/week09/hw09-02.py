@@ -60,29 +60,52 @@ for e in range(epochs):
         targets = numpy.zeros(output_nodes) + 0.01
         targets[int(all_values[0])] = 0.99
         n.train(inputs, targets)
+    test_data_file = open("dataset/mnist_test.csv")
+    test_data_list = test_data_file.readlines()
+    test_data_file.close()
+    scores = []
+    for record in test_data_list:
+        all_values = record.split(',')
+        correct_number = int(all_values[0])
+        print("该图片对应的数字为:", correct_number)
+        # 预处理数字图片
+        inputs = (numpy.asfarray(all_values[1:])) / 255.0 * 0.99 + 0.01
+        # 让网络判断图片对应的数字
+        outputs = n.query(inputs)
+        # 找到数值最大的神经元对应的编号
+        label = numpy.argmax(outputs)
+        print("网络认为图片的数字是：", label)
+        if label == correct_number:
+            scores.append(1)
+        else:
+            scores.append(0)
+    print(scores)
+    # 计算图片判断的成功率
+    scores_array = numpy.asarray(scores)
+    print("perfermance = ", scores_array.sum() / scores_array.size)
     print("第", e+1, "次训练结束")
     e=e+1
-test_data_file = open("dataset/mnist_test.csv")
-test_data_list = test_data_file.readlines()
-test_data_file.close()
-scores = []
-for record in test_data_list:
-    all_values = record.split(',')
-    correct_number = int(all_values[0])
-    print("该图片对应的数字为:",correct_number)
-    #预处理数字图片
-    inputs = (numpy.asfarray(all_values[1:])) / 255.0 * 0.99 + 0.01
-    #让网络判断图片对应的数字
-    outputs = n.query(inputs)
-    #找到数值最大的神经元对应的编号
-    label = numpy.argmax(outputs)
-    print("网络认为图片的数字是：", label)
-    if label == correct_number:
-        scores.append(1)
-    else:
-        scores.append(0)
-print(scores)
-
-#计算图片判断的成功率
-scores_array = numpy.asarray(scores)
-print("perfermance = ", scores_array.sum() / scores_array.size)
+# test_data_file = open("dataset/mnist_test.csv")
+# test_data_list = test_data_file.readlines()
+# test_data_file.close()
+# scores = []
+# for record in test_data_list:
+#     all_values = record.split(',')
+#     correct_number = int(all_values[0])
+#     print("该图片对应的数字为:",correct_number)
+#     #预处理数字图片
+#     inputs = (numpy.asfarray(all_values[1:])) / 255.0 * 0.99 + 0.01
+#     #让网络判断图片对应的数字
+#     outputs = n.query(inputs)
+#     #找到数值最大的神经元对应的编号
+#     label = numpy.argmax(outputs)
+#     print("网络认为图片的数字是：", label)
+#     if label == correct_number:
+#         scores.append(1)
+#     else:
+#         scores.append(0)
+# print(scores)
+#
+# #计算图片判断的成功率
+# scores_array = numpy.asarray(scores)
+# print("perfermance = ", scores_array.sum() / scores_array.size)
